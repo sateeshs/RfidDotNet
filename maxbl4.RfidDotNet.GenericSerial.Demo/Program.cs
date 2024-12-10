@@ -22,6 +22,7 @@ namespace maxbl4.RfidDotNet.GenericSerial.Demo
         static readonly BehaviorSubject<int> temperatureSubject = new(0);
         private static ConnectionString connectionString;
         private static int updateNumber = 0;
+        private static string connect = "protocol=Serial;Serial=COM3@9600";
 
         static void Main(string[] args)
         {
@@ -43,11 +44,12 @@ namespace maxbl4.RfidDotNet.GenericSerial.Demo
             try
             {
                 var demoArgs = Args.Parse<DemoArgs>(args);
-                connectionString = ConnectionString.Parse(demoArgs.ConnectionString);
+                //connectionString = ConnectionString.Parse(demoArgs.ConnectionString);
+                connectionString = ConnectionString.Parse(connect);
                 if (!connectionString.IsValid(out var msg))
                 {
                     Console.WriteLine($"Connection string is invalid: {msg}");
-                    ShowUsageAndExit();
+                    //ShowUsageAndExit();
                 }
 
                 using var reader = new SerialReader(new SerialConnectionString(connectionString).Connect());
@@ -78,7 +80,8 @@ namespace maxbl4.RfidDotNet.GenericSerial.Demo
 
         static void SetInventoryOptions(SerialReader reader, DemoArgs demoArgs)
         {
-            var cs = ConnectionString.Parse(demoArgs.ConnectionString);
+            //var cs = ConnectionString.Parse(demoArgs.ConnectionString);
+            var cs = ConnectionString.Parse(connect);
             reader.SetAntennaCheck(false).Wait();
             reader.SetAntennaConfiguration((GenAntennaConfiguration)cs.AntennaConfiguration).Wait();
             reader.SetDrmEnabled(demoArgs.EnableDrmMode).Wait();
@@ -100,7 +103,9 @@ namespace maxbl4.RfidDotNet.GenericSerial.Demo
 
         static void StartPolling(SerialReader reader, DemoArgs demoArgs)
         {
-            var cs = ConnectionString.Parse(demoArgs.ConnectionString);
+            //var cs = ConnectionString.Parse(demoArgs.ConnectionString);
+            var cs = ConnectionString.Parse(connect);
+
             Task.Run(async () =>
             {
                 temperatureSubject.OnNext(reader.GetReaderTemperature().Result);
@@ -158,7 +163,7 @@ namespace maxbl4.RfidDotNet.GenericSerial.Demo
             tagStreamErrors.Subscribe(x =>
             {
                 Console.WriteLine(x);
-                Environment.Exit(0);
+                //Environment.Exit(0);
             });
             tagStream.Buffer(TimeSpan.FromMilliseconds(demoArgs.StatsSamplingInterval))
                 .Where(x => x.Count > 0)
@@ -202,13 +207,15 @@ namespace maxbl4.RfidDotNet.GenericSerial.Demo
             foreach (var h in rpsStats.AggTags
                 .Where(x => string.IsNullOrWhiteSpace(demoArgs.TagIdFilter) || Regex.IsMatch(x.TagId, demoArgs.TagIdFilter)))
             {
-                Console.WriteLine($"{h.TagId} {h.ReadCount}");
+                Console.WriteLine($"TagId:{h.TagId} ReadCount:{h.ReadCount} Text:{h.Text}");
             }
         }
 
         static void ShowBasicReaderInfo(SerialReader reader, DemoArgs args)
         {
-            reader.SetRFPower((byte)ConnectionString.Parse(args.ConnectionString).RFPower).Wait();
+            reader.SetRFPower((byte)ConnectionString.Parse(connect).RFPower).Wait();
+
+            //reader.SetRFPower((byte)ConnectionString.Parse(args.ConnectionString).RFPower).Wait();
             Console.WriteLine("Serial number: {0}", reader.GetSerialNumber().Result);
             var info = reader.GetReaderInfo().Result;
             Console.WriteLine("Model: {0}", info.Model);
@@ -232,7 +239,7 @@ namespace maxbl4.RfidDotNet.GenericSerial.Demo
         {
             Console.WriteLine(ArgUsage.GenerateUsageFromTemplate<DemoArgs>());
             ListSerialPorts();
-            Environment.Exit(0);
+            //Environment.Exit(0);
         }
 
         static void ListSerialPorts()

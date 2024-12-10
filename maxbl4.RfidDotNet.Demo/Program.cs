@@ -11,15 +11,16 @@ namespace maxbl4.RfidDotNet.Demo
         static readonly UniversalTagStreamFactory factory = new();
         private static ConnectionString connectionString;
         private static string errors = "";
+        private static string connect = "protocol=Serial;Serial=COM3@9600";
         static void Main(string[] args)
         {
-            if (args.Length == 0)
-            {
-                Console.WriteLine("Supply connection string");
-                return;
-            }
+            //if (args.Length == 0)
+            //{
+            //    Console.WriteLine("Supply connection string");
+            //    return;
+            //}
 
-            connectionString = ConnectionString.Parse(args[0]);
+            connectionString = ConnectionString.Parse(connect);
             if (!connectionString.IsValid(out var errors))
             {
                 Console.WriteLine(errors);
@@ -34,7 +35,7 @@ namespace maxbl4.RfidDotNet.Demo
                 errors += e.Message + "\r\n";
                 Console.WriteLine(e.Message);
             });
-            SubscribeToPollingResults(stream.Tags, 500);
+            SubscribeToPollingResults(stream.Tags, 200);
             stream.Start().Wait();
             Console.WriteLine("Polling for tags...");
             Console.ReadLine();
@@ -62,9 +63,11 @@ namespace maxbl4.RfidDotNet.Demo
                 Console.Write("{0,6:F1}", h);
             }
             Console.WriteLine($" Avg={rpsStats.Average:F1}");
+            
             foreach (var h in rpsStats.AggTags)
             {
                 Console.WriteLine($"{h.TagId} {h.ReadCount}");
+                Console.WriteLine(h.Text);
             }
         }
     }

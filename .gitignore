@@ -3,3 +3,4 @@ obj
 .idea
 *.iml
 *.nupkg
+/.vs/maxbl4.RfidDotNet

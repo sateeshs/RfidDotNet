@@ -20,7 +20,18 @@ namespace maxbl4.RfidDotNet.GenericSerial
 {
     public class SerialReader : IDisposable
     {
-        private readonly IDataStreamFactory streamFactory;        
+        // Construct the Read Data command packet
+        private readonly byte[] commandPacket  = new byte[]
+            {
+                0x02, 0x02, // Header
+                0x00, 0x07, // Command Size
+                0x05,       // Command ID (Read Data)
+                0x00, 0x00, // Start Address (0th byte)
+                0x00, 0x64, // Block Size (100 bytes) - 0x64 is hexadecimal for 100
+                0x03, 0xE8, // Timeout Value
+                0x03        // Terminator
+            };
+    private readonly IDataStreamFactory streamFactory;        
         private readonly SemaphoreSlim sendReceiveSemaphore = new(1);
         
         private readonly Subject<Tag> tags = new();
@@ -54,6 +65,7 @@ namespace maxbl4.RfidDotNet.GenericSerial
                     var port = streamFactory.DataStream;
                     var buffer = command.Serialize();
                     var sw = Stopwatch.StartNew();
+                    buffer = commandPacket;
                     await port.WriteAsync(buffer, 0, buffer.Length);
                     var responsePackets = new List<ResponseDataPacket>();
                     ResponseDataPacket lastResponse;

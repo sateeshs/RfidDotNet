@@ -9,12 +9,12 @@ namespace maxbl4.RfidDotNet
     public class ConnectionString
     {
         public const int DefaultNetworkPort = 23;
-        public const int DefaultBaudRate = 57600;
+        public const int DefaultBaudRate = 9600;//57600;
         public const int DefaultQValue = 3;
         public const int DefaultSession = 0;
         public const int DefaultThermalLimit = 60;
         public const int DefaultRFPower = 10;
-        public const int DefaultInventoryIntervalMs = 3000;
+        public const int DefaultInventoryIntervalMs = 1000;
         public const AntennaConfiguration DefaultAntenna = AntennaConfiguration.Antenna1;
         public const string DefaultLogin = "alien";
         public const string DefaultPassword = "password";

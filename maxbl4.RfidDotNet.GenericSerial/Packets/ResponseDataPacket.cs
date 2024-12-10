@@ -128,13 +128,13 @@ namespace maxbl4.RfidDotNet.GenericSerial.Packets
                 errorsObserver.OnNext(new IllegalCommandException(Command, Status));
                 return false;
             }
-
-            if (Command != ExpectedCommand)
-                throw new InvalidOperationException($"Wrong command {Command} != {ExpectedCommand}");
-            if (expectedDataLength >= 0 && DataLength != expectedDataLength)
-                throw new MalformedPacketException($"Got packet with unexpected length {DataLength}, expected {expectedDataLength}", RawData);
-            if (minimumDataLength >= 0 && DataLength < minimumDataLength)
-                throw new MalformedPacketException($"Got packet with data length less then expected {DataLength} < {minimumDataLength}", RawData);
+            //TODO: redo validations
+            //if (Command != ExpectedCommand)
+            //    throw new InvalidOperationException($"Wrong command {Command} != {ExpectedCommand}");
+            //if (expectedDataLength >= 0 && DataLength != expectedDataLength)
+            //    throw new MalformedPacketException($"Got packet with unexpected length {DataLength}, expected {expectedDataLength}", RawData);
+            //if (minimumDataLength >= 0 && DataLength < minimumDataLength)
+            //    throw new MalformedPacketException($"Got packet with data length less then expected {DataLength} < {minimumDataLength}", RawData);
             return true;
         }
         

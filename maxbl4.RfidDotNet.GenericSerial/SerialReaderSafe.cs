@@ -80,8 +80,8 @@ namespace maxbl4.RfidDotNet.GenericSerial
                 ThrowOnIllegalCommandError = false
             };
             await serialReader.ActivateOnDemandInventoryMode(true);
-            await serialReader.SetAntennaConfiguration((GenAntennaConfiguration) connectionString.AntennaConfiguration);
-            await serialReader.SetRFPower((byte)connectionString.RFPower);
+            //await serialReader.SetAntennaConfiguration((GenAntennaConfiguration) connectionString.AntennaConfiguration);
+            //await serialReader.SetRFPower((byte)connectionString.RFPower);
             await serialReader.SetInventoryScanInterval(TimeSpan.FromMilliseconds(connectionString.InventoryDuration));
             serialReader.Errors.Subscribe(e =>
             {

@@ -105,9 +105,12 @@ namespace maxbl4.RfidDotNet.GenericSerial
                 try
                 {
                     var res = await inventoryResults.Reader.ReadAsync();
-                    foreach (var tag in res.Tags)
+                    if (res != null)
                     {
-                        tags.OnNext(tag);
+                        foreach (var tag in res?.Tags)
+                        {
+                            tags.OnNext(tag);
+                        }
                     }
                 }
                 catch (Exception e)

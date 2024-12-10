@@ -36,13 +36,14 @@ namespace maxbl4.RfidDotNet.Infrastructure
                     .OrderBy(x => x.TagId)
                     .ToList();
 
-                var rps = new RpsStats {
-                    Histogram = report, 
-                    AggTags = aggTags,
-                    Average = (diffs.Any() ? diffs.Average(x => x)*1000/ samplingIntervalMs : 0),
-                    RPS = list.Sum(x => x.ReadCount)*1000/ samplingIntervalMs,
-                    Reads = list.Sum(x => x.ReadCount),
-                    TagIds = list.Select(x => x.TagId).Distinct().Count()
+            var rps = new RpsStats {
+                Histogram = report,
+                AggTags = aggTags,
+                Average = (diffs.Any() ? diffs.Average(x => x) * 1000 / samplingIntervalMs : 0),
+                RPS = list.Sum(x => x.ReadCount) * 1000 / samplingIntervalMs,
+                Reads = list.Sum(x => x.ReadCount),
+                TagIds = list.Select(x => x.TagId).Distinct().Count(),
+                //Text = string.Join(", ", list.Where(x => string.IsNullOrEmpty(x.Text)))
                 };
             return rps;
         }
@@ -57,5 +58,6 @@ namespace maxbl4.RfidDotNet.Infrastructure
         public int Reads { get; set; }
         public int TagIds { get; set; }
         public List<Tag> AggTags { get; set; }
+        public string Text { get; internal set; }
     }
 }

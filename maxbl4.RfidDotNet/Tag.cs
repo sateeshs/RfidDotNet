@@ -11,5 +11,7 @@ namespace maxbl4.RfidDotNet
         public int Antenna { get; set; }
         public int ReadCount { get; set; }
         public double Rssi { get; set; }
+
+        public string Text { get; set; }
     }
 }

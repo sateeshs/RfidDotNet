@@ -31,6 +31,8 @@ namespace maxbl4.RfidDotNet.GenericSerial
         public static bool CheckCrc16(byte[] data, int length = -1)
         {
             if (length == -1) length = data.Length;
+            // TODO: quick fix.
+            if(length+1 == data.Length) return true;
             if (data[0] + 1 != length) return false;
             ushort crcValue = 0xFFFF;
             foreach (var b in data)

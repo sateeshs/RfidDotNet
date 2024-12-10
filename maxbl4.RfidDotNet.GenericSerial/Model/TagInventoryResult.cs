@@ -92,6 +92,7 @@ namespace maxbl4.RfidDotNet.GenericSerial.Model
                 case ReaderCommand.TagInventory:
                     switch (packet.Status)
                     {
+                        //case ResponseStatusCode.ReadData:
                         case ResponseStatusCode.InventoryTimeout:
                         case ResponseStatusCode.InventoryMoreFramesPending:
                         case ResponseStatusCode.InventoryBufferOverflow:
@@ -101,6 +102,16 @@ namespace maxbl4.RfidDotNet.GenericSerial.Model
                             return;
                         case ResponseStatusCode.InventoryStatisticsDelivery:
                             ReadInventoryStatistics(packet);
+                            return;
+                    }
+                    break;
+                case ReaderCommand.ReadData:
+                    switch (packet.Status)
+                    {
+                        case ResponseStatusCode.Success:
+                            PacketCount++;
+
+                            ReadInventoryResult(packet);
                             return;
                     }
                     break;
@@ -152,13 +163,20 @@ namespace maxbl4.RfidDotNet.GenericSerial.Model
             var length = buffer[offset] & 0b0111_1111;
             var hasEpcPlusTid = (buffer[offset] & 0b1000_0000) > 0;
             var epcLength = hasEpcPlusTid ? length / 2 : length;
+            var cleanseData = new byte[epcLength];
+            Buffer.BlockCopy(buffer, offset + 1, cleanseData, 0, epcLength);
+            string ascii = Encoding.ASCII.GetString(cleanseData);
+
             var epc = new StringBuilder(epcLength * 2);
             for (var i = 0; i < epcLength; i++)
             {
                 epc.Append(buffer[offset + 1 + i].ToString("X2"));
+               
             }
-            var tag = new Tag{TagId = epc.ToString(), Rssi = buffer[offset + length + 1], ReadCount = 1};
+            var tag = new Tag{TagId = epc.ToString(), Rssi = buffer[offset + length + 1], ReadCount = 1, Text = ascii };
             offset += length + 2;
+            //string asciiText = Encoding.ASCII.GetString(buffer);
+
             return tag;
         }
     }
